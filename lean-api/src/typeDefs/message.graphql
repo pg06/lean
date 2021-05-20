@@ -1,0 +1,18 @@
+scalar Date
+
+type Message {
+  content: String!
+  userId: String!
+  roomId: String!
+  type: String!
+  timestamp: Date!
+}
+
+type Query {
+  messages: [Message!]
+  roomMessages(roomId: String!): [Message]
+}
+
+type Mutation {
+  createMessage(content: String!, userId: String!, roomId: String!): Message
+}

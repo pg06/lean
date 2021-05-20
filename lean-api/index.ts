@@ -1,22 +1,13 @@
 import { GraphQLServer } from "graphql-yoga";
 import { connect } from "mongoose";
+import { default as typeDefs } from './src/typeDefs';
+import { default as resolvers } from './src/resolvers';
 
 connect(`mongodb://localhost:27017/myappdb`, {
   useNewUrlParser: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
+  useFindAndModify: false
 });
-
-const typeDefs = `
-  type Query {
-    hello(name: String): String!
-  }
-`
-
-const resolvers = {
-  Query: {
-    hello: (_, { name }) => `Hello ${name || 'World'}`,
-  },
-}
 
 const options = { port: 3001, endpoint: '/graphql' };
 const server = new GraphQLServer({ typeDefs, resolvers });

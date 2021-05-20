@@ -1,0 +1,26 @@
+scalar Date
+
+type Room {
+  id: ID!
+  name: String!
+  slug: String!
+  timestamp: Date!
+}
+
+type RoomWithMessages {
+  id: ID!
+  name: String!
+  slug: String!
+  timestamp: Date!
+  messages: [Message!]
+}
+
+type Query {
+  rooms: [Room!]
+  room(roomId: String, slug: String): Room
+  roomWithMessages(roomId: String, slug: String): RoomWithMessages
+}
+
+type Mutation {
+  createRoom(name: String!): Room
+}

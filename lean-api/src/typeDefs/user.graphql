@@ -1,0 +1,19 @@
+scalar Date
+
+type User {
+  id: ID!
+  name: String!
+  email: String
+  birthday: Date
+}
+
+type Query {
+  users: [User!]
+  user(email: String!): User
+}
+
+type Mutation {
+  createUnloggedUser(name: String!): User
+  createUser(name: String!, email: String!, birthday: Date!): User
+  updateUser(userId: String!, name: String!, email: String!, birthday: Date!): User
+}
