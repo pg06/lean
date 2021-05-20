@@ -1,0 +1,10 @@
+{
+  "name": "lean",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "server": "nodemon --exec ts-node lean-api/index"
+  },
+  "author": "",
+  "license": "ISC"
+}

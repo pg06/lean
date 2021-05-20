@@ -1,0 +1,29 @@
+{
+  "name": "lean-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "server": "nodemon --exec ts-node index"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^9.0.2",
+    "graphql": "^15.5.0",
+    "graphql-yoga": "^1.18.3",
+    "merge-graphql-schemas": "^1.7.8",
+    "mongoose": "^5.12.10",
+    "slugify": "^1.5.3"
+  },
+  "resolutions": {
+    "graphql": "^15.5.0",
+    "**/graphql": "^15.5.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.23",
+    "@types/mocha": "^8.2.2",
+    "jest": "^26.6.3",
+    "jest-cli": "^26.6.3"
+  }
+}
