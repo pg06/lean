@@ -5,23 +5,23 @@ const RoomSchema = new Schema({
   name: {
     type: String,
     trim: true,
-    required: true
+    required: true,
   },
   slug: {
     type: String,
     trim: true,
     lowercase: true,
-    required: true
+    required: true,
   },
   timestamp: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
-RoomSchema.path('slug').validate(async (slug: string) => {
+RoomSchema.path("slug").validate(async (slug: string) => {
   const count = await models.Room.countDocuments({ slug });
   return !count;
-}, 'Room already exists');
+}, "Room already exists");
 
-export const Room = model('Room', RoomSchema);
+export const Room = model("Room", RoomSchema);
