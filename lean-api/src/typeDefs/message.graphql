@@ -1,16 +1,16 @@
 scalar Date
 
 type Message {
+  _id: ID!
   content: String!
-  userId: String!
-  roomId: String!
+  room: Room
+  user: User
   type: String!
   timestamp: Date!
 }
 
 type Query {
   messages: [Message!]
-  roomMessages(roomId: String!): [Message]
 }
 
 type Mutation {

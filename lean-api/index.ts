@@ -3,7 +3,7 @@ import { connect } from "mongoose";
 import { default as typeDefs } from "./src/typeDefs";
 import { default as resolvers } from "./src/resolvers";
 
-connect(`mongodb://localhost:27017/myappdb`, {
+connect(`mongodb://localhost:27017/myappdb8`, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useFindAndModify: false,

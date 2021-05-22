@@ -1,14 +1,15 @@
 import { Schema, model } from "mongoose";
 
 const MessageSchema = new Schema({
+  _id: Schema.Types.ObjectId,
   content: {
     type: String,
     trim: true,
     required: true,
   },
-  userId: {
-    type: String,
-    trim: true,
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
     required: true,
   },
   type: {
@@ -18,9 +19,9 @@ const MessageSchema = new Schema({
     trim: true,
     required: true,
   },
-  roomId: {
-    type: String,
-    trim: true,
+  room: {
+    type: Schema.Types.ObjectId,
+    ref: "Room",
     required: true,
   },
   timestamp: {

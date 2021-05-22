@@ -1,26 +1,20 @@
 scalar Date
 
 type Room {
-  id: ID!
+  _id: ID!
   name: String!
   slug: String!
   timestamp: Date!
-}
-
-type RoomWithMessages {
-  id: ID!
-  name: String!
-  slug: String!
-  timestamp: Date!
-  messages: [Message!]
+  messages: [Message]
+  isDefault: Boolean!
 }
 
 type Query {
-  rooms: [Room!]
-  room(roomId: String, slug: String): Room
-  roomWithMessages(roomId: String, slug: String): RoomWithMessages
+  rooms(isDefault: Boolean): [Room!]
+  room(slug: String, name: String): Room
 }
 
 type Mutation {
-  createRoom(name: String!): Room
+  createRoom(name: String!, isDefault: Boolean): Room
+  updateRoom(roomId: ID!, name: String, isDefault: Boolean): Room
 }

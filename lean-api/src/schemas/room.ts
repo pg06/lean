@@ -1,7 +1,7 @@
 import { Schema, model, models } from "mongoose";
 
 const RoomSchema = new Schema({
-  id: Schema.Types.ObjectId,
+  _id: Schema.Types.ObjectId,
   name: {
     type: String,
     trim: true,
@@ -16,6 +16,16 @@ const RoomSchema = new Schema({
   timestamp: {
     type: Date,
     default: Date.now,
+  },
+  messages: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Message",
+    },
+  ],
+  isDefault: {
+    type: Boolean,
+    default: false,
   },
 });
 

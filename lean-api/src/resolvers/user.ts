@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { User } from "../schemas";
 
 export default {
@@ -14,12 +15,8 @@ export default {
         email,
         birthday,
       }: { name: string; email: string; birthday: string }
-    ) => {
-      const user = new User({ name, email, birthday });
-      user.id = user._id;
-      await user.save();
-      return user;
-    },
+    ) =>
+      await User.create({ _id: new Types.ObjectId(), name, email, birthday }),
     updateUser: async (
       _: any,
       {
@@ -36,8 +33,11 @@ export default {
       );
     },
     createUnloggedUser: async (_: any, { name }: { name: string }) => {
-      const user = new User({ name, email: undefined });
-      user.id = user._id;
+      const _id = new Types.ObjectId();
+      const user = new User({
+        _id,
+        name,
+      });
       await user.save({ validateBeforeSave: false });
       return user;
     },

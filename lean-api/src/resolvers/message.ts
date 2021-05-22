@@ -1,10 +1,9 @@
-import { Message } from "../schemas";
+import { Types } from "mongoose";
+import { Message, Room } from "../schemas";
 
 export default {
   Query: {
     messages: async () => await Message.find(),
-    roomMessages: async (_: any, { roomId }: { roomId: string }) =>
-      await Message.find({ roomId }),
   },
 
   Mutation: {
@@ -15,6 +14,20 @@ export default {
         userId,
         roomId,
       }: { content: string; userId: string; roomId: string }
-    ) => await Message.create({ content, userId, roomId }),
+    ) => {
+      const _id = new Types.ObjectId();
+      const message = await Message.create({
+        _id,
+        content,
+        user: userId,
+        room: roomId,
+      });
+      await Room.findByIdAndUpdate(
+        roomId,
+        { $push: { messages: { _id } } },
+        { new: true }
+      );
+      return message;
+    },
   },
 };

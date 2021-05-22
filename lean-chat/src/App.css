@@ -1,38 +1,53 @@
-.App {
-  text-align: center;
+a:hover {
+  text-decoration: none;
 }
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.user-item {
+  border: 1px solid #dee2e6;
+  border-radius: 10px;
+  margin: 12px;
+  padding: 10px;
 }
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.message-card {
+  border: 1px solid #dee2e6;
+  border-radius: 10px;
+  margin: 12px;
+  padding: 10px;
+  padding-top: 2px;
+  padding-bottom: 0;
 }
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.message-card b {
 }
-
-.App-link {
-  color: #61dafb;
+.tab-content {
+  border: 1px solid #dee2e6;
+  border-top: 1px solid #dee2e6;
+  border-radius: 16px;
+  min-height: 200px;
 }
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.container {
+  max-width: 576px;
+}
+span.close-room:hover {
+  color: #8c0000;
+}
+.nav-item span.close-room {
+  opacity: 0;
+  visibility: hidden;
+  display: none;
+  /* margin-left: 5px; */
+  padding: 0 5px;
+  position: absolute;
+}
+.nav-item span.fake {
+  display: inline-block;
+}
+.nav-item {
+  padding: 8px 25px;
+}
+.nav-item:hover span.close-room:not(.fake) {
+  opacity: 1;
+  visibility: visible;
+  display: inline-block;
+}
+.nav-item:hover span.fake {
+  display: none;
 }
