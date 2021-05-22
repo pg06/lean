@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "server": "nodemon --exec ts-node lean-api/index"
+    "server": "nodemon --watch \"lean-api/src/**\" --ext \"ts,json\" --ignore \"src/tests/**\" --exec  ts-node lean-api/src/index",
+    "server-debug": "nodemon --watch \"lean-api/src/**\" --ext \"ts,json\" --ignore \"src/tests/**\" --exec  ts-node lean-api/src/index"
   },
   "author": "",
   "license": "ISC"

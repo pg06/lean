@@ -1,17 +1,27 @@
-import { Schema, model, models } from "mongoose";
+import { Schema, model, models, Document } from "mongoose";
+import { User } from "./user";
+import { Message } from "./message";
 
+export interface Room extends Document {
+  _id: string;
+  name: string;
+  slug: string;
+  timestamp: string;
+  messages: Message[];
+  users: User[];
+  isDefault: boolean;
+}
 const RoomSchema = new Schema({
   _id: Schema.Types.ObjectId,
   name: {
     type: String,
     trim: true,
-    required: true,
+    required: [true, "Invalid Chat Name!"],
   },
   slug: {
     type: String,
     trim: true,
     lowercase: true,
-    required: true,
   },
   timestamp: {
     type: Date,
@@ -23,6 +33,12 @@ const RoomSchema = new Schema({
       ref: "Message",
     },
   ],
+  users: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
   isDefault: {
     type: Boolean,
     default: false,
@@ -32,6 +48,6 @@ const RoomSchema = new Schema({
 RoomSchema.path("slug").validate(async (slug: string) => {
   const count = await models.Room.countDocuments({ slug });
   return !count;
-}, "Room already exists");
+}, "Chat already exists");
 
-export const Room = model("Room", RoomSchema);
+export const Room = model<Room>("Room", RoomSchema);

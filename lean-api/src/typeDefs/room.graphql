@@ -5,16 +5,23 @@ type Room {
   name: String!
   slug: String!
   timestamp: Date!
+  users: [User]
   messages: [Message]
   isDefault: Boolean!
 }
 
 type Query {
-  rooms(isDefault: Boolean): [Room!]
-  room(slug: String, name: String): Room
+  getAllRooms(isDefault: Boolean): [Room!]
+  getRoom(slug: String, name: String): Room
 }
 
 type Mutation {
   createRoom(name: String!, isDefault: Boolean): Room
   updateRoom(roomId: ID!, name: String, isDefault: Boolean): Room
+  enterRoom(userId: ID!, roomId: ID, name: String, slug: String, isDefault: Boolean): Room
+  leaveRoom(roomId: ID!, userId: ID!): Room
+}
+
+type Subscription {
+  getRoom(roomId: ID, slug: String, name: String): Room
 }

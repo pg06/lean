@@ -1,4 +1,12 @@
-import { Schema, model, models } from "mongoose";
+import { Schema, model, models, Document } from "mongoose";
+
+export interface User extends Document {
+  _id: string;
+  name: string;
+  email: string;
+  slug: string;
+  birthday: string;
+}
 
 const UserSchema = new Schema({
   _id: Schema.Types.ObjectId,
@@ -32,4 +40,4 @@ UserSchema.path("email").validate(async (email: string) => {
   return !count;
 }, "Email already exists");
 
-export const User = model("User", UserSchema);
+export const User = model<User>("User", UserSchema);

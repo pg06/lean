@@ -1,4 +1,15 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, Document } from "mongoose";
+import { User } from "./user";
+import { Room } from "./room";
+
+export interface Message extends Document {
+  _id: string;
+  content: string;
+  user: User;
+  room: Room;
+  type: string;
+  timestamp: string;
+}
 
 const MessageSchema = new Schema({
   _id: Schema.Types.ObjectId,
@@ -14,7 +25,7 @@ const MessageSchema = new Schema({
   },
   type: {
     type: String,
-    enum: ["message", "info"],
+    enum: ["message", "info", "alert", "warning"],
     default: "message",
     trim: true,
     required: true,
@@ -30,4 +41,4 @@ const MessageSchema = new Schema({
   },
 });
 
-export const Message = model("Message", MessageSchema);
+export const Message = model<Message>("Message", MessageSchema);

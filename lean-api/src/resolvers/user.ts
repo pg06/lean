@@ -3,21 +3,31 @@ import { User } from "../schemas";
 
 export default {
   Query: {
-    users: async () => await User.find(),
-    user: async ({ email }: { email: string }) => await User.findOne({ email }),
+    getAllUsers: () => User.find(),
+    getUser: ({ email, userId }: { email: string; userId: string }) =>
+      User.findOne({ $or: [{ email }, { _id: userId }] }),
   },
 
   Mutation: {
-    createUser: async (
+    createUnloggedUser: (_: any, { name }: { name: string }) => {
+      const _id = new Types.ObjectId();
+      const user = new User({
+        _id,
+        name,
+      });
+      return user.save({ validateBeforeSave: false });
+    },
+
+    createUser: (
       _: any,
       {
         name,
         email,
         birthday,
       }: { name: string; email: string; birthday: string }
-    ) =>
-      await User.create({ _id: new Types.ObjectId(), name, email, birthday }),
-    updateUser: async (
+    ) => User.create({ _id: new Types.ObjectId(), name, email, birthday }),
+
+    updateUser: (
       _: any,
       {
         userId,
@@ -25,21 +35,7 @@ export default {
         email,
         birthday,
       }: { userId: string; name: string; email: string; birthday: string }
-    ) => {
-      return await User.findByIdAndUpdate(
-        userId,
-        { name, email, birthday },
-        { new: true }
-      );
-    },
-    createUnloggedUser: async (_: any, { name }: { name: string }) => {
-      const _id = new Types.ObjectId();
-      const user = new User({
-        _id,
-        name,
-      });
-      await user.save({ validateBeforeSave: false });
-      return user;
-    },
+    ) =>
+      User.findByIdAndUpdate(userId, { name, email, birthday }, { new: true }),
   },
 };

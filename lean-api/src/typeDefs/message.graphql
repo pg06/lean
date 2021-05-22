@@ -10,7 +10,9 @@ type Message {
 }
 
 type Query {
-  messages: [Message!]
+  getAllMessages: [Message]
+  getMessagesByRoom(roomId: ID!, type: String): [Message]
+  getMessagesByContent(roomId: ID!, search: String!, type: String): [Message]
 }
 
 type Mutation {
