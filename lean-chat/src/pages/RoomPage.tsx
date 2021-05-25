@@ -1,60 +1,80 @@
 import { graphql } from "@apollo/client/react/hoc";
-import { Link } from "react-router-dom";
 import { flowRight as compose } from "lodash";
-import { RoomQuery } from "../queries/index";
-import { useParams } from "react-router-dom";
+import { GET_ALL_ROOMS, GET_ROOMS_BY_USER, ENTER_ROOM } from "../queries/index";
 import "../App.css";
-
-interface User {
-  name: string;
-  email: string;
-  birthday: string;
-}
-
-interface Message {
-  content: string;
-  user: User;
-  type: string;
-  timestamp: string;
-}
-
-interface Room {
-  id: string;
-  name: string;
-  slug: string;
-  timestamp: string;
-  messages: Message[];
-}
+import { Component } from "react";
+import Chats from "../components/Chats";
+import type { User, Room, Message, Match, History } from "../types";
 
 interface Data {
-  room: Room;
+  enterRoom: Room;
   error: Error;
   loading: boolean;
 }
 
-interface Params {
-  slug: string;
+interface MessageData {
+  message: Message;
+  error: Error;
+  loading: boolean;
+  subscribeToMore: Function;
 }
 
-interface Match {
-  params: Params;
+interface UserData {
+  getSelf: User;
+  error: Error;
+  loading: boolean;
+}
+
+interface RoomData {
+  getAllRooms: Room[];
+  getRoomsByUser: Room[];
+  error: Error;
+  loading: boolean;
 }
 
 interface Props {
   data: Data;
+  meData: UserData;
+  roomsData: RoomData;
+  roomsByUserData: RoomData;
+  messageData: MessageData;
   match: Match;
+  history: History;
+  children: Component;
 }
 
 interface OwnProps {
   match: Match;
 }
 
-const HomePage = (props: Props) => {
+const RoomPage = (props: Props) => {
   const {
-    data: { room, error, loading },
+    data: { enterRoom: room, error, loading },
+    roomsData: { getAllRooms },
+    roomsByUserData: { getRoomsByUser },
+    match,
+    history,
   } = props;
+  const {
+    params: { slug },
+  } = match;
+  const { push } = history;
 
-  console.log(room);
+  const rooms: Room[] = [];
+  if (getAllRooms) {
+    getAllRooms.forEach((r) => {
+      if (!rooms.filter((_r) => _r._id === r._id).length) rooms.push(r);
+    });
+  }
+  if (getRoomsByUser) {
+    getRoomsByUser.forEach((r) => {
+      if (!rooms.filter((_r) => _r._id === r._id).length) rooms.push(r);
+    });
+  }
+
+  if (slug.indexOf("$") > -1) {
+    push("/");
+  }
 
   if (loading) {
     return <p>Loading...</p>;
@@ -64,30 +84,26 @@ const HomePage = (props: Props) => {
     console.error(error);
     return (
       <div>
-        <h4>an error occurred...</h4>
-        <p>errrrr</p>
+        <h4>[RoomPage] an error occurred...</h4>
+        <p>{error.message}</p>
       </div>
     );
   }
 
-  return (
-    <section className="room">
-      {room.messages.map((message, index) => (
-        <div className="message-card" key={message.timestamp}>
-          <b>{message.user.name}</b>
-          <span>
-            <p>{message.content}</p>
-          </span>
-        </div>
-      ))}
-    </section>
-  );
+  return <Chats room={room} rooms={rooms} history={history} match={match} />;
 };
 
 export default compose(
-  graphql(RoomQuery, {
-    options: ({ match: { params: slug } }: OwnProps) => ({
+  graphql<RoomData>(GET_ALL_ROOMS, { name: "roomsData" }),
+  graphql<RoomData>(GET_ROOMS_BY_USER, { name: "roomsByUserData" }),
+  graphql(ENTER_ROOM, {
+    options: ({
+      match: {
+        params: { slug },
+      },
+    }: OwnProps) => ({
       variables: { slug },
+      skip: !slug || slug.indexOf("$") > -1,
     }),
   })
-)(HomePage);
+)(RoomPage);

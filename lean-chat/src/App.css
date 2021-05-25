@@ -1,11 +1,38 @@
 a:hover {
   text-decoration: none;
 }
+.new-user-modal {
+  background: rgba(0, 0, 0, 0.15);
+}
+.new-user-footer {
+  text-align: right;
+}
 .user-item {
   border: 1px solid #dee2e6;
   border-radius: 10px;
   margin: 12px;
   padding: 10px;
+}
+.room {
+  overflow: auto;
+  border: 1px solid #dee2e6;
+  border-radius: 12px;
+  min-height: 200px;
+  max-height: 400px;
+}
+.room .messages {
+  overflow: hidden;
+}
+.room-input input,
+.room-input textarea,
+.room-input button {
+  margin-top: 10px;
+  border-radius: 12px;
+  border-color: #dee2e6;
+}
+.message-alert {
+  text-align: center;
+  margin: 12px;
 }
 .message-card {
   border: 1px solid #dee2e6;
@@ -14,14 +41,19 @@ a:hover {
   padding: 10px;
   padding-top: 2px;
   padding-bottom: 0;
+  width: fit-content;
+}
+.message-card .me {
+  align-self: flex-start;
 }
 .message-card b {
 }
 .tab-content {
-  border: 1px solid #dee2e6;
+  /* border: 1px solid #dee2e6;
   border-top: 1px solid #dee2e6;
   border-radius: 16px;
   min-height: 200px;
+  max-height: 500px; */
 }
 .container {
   max-width: 576px;

@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
-const UsersQuery = gql`
+const GET_SELF = gql`
   query {
-    users {
+    getSelf {
       _id
       name
       email
@@ -11,9 +11,31 @@ const UsersQuery = gql`
   }
 `;
 
-const RoomsDefaultQuery = gql`
+const CREATE_UNLOGGED_USER = gql`
+  mutation createUnloggedUser($name: String!) {
+    createUnloggedUser(name: $name) {
+      _id
+      name
+      email
+      birthday
+    }
+  }
+`;
+
+const COMPLETE_SIGN_IN = gql`
+  mutation completeSignIn($name: String!, $email: String!, $birthday: String!) {
+    completeSignIn(name: $name, email: $email, birthday: $birthday) {
+      _id
+      name
+      email
+      birthday
+    }
+  }
+`;
+
+const GET_ALL_ROOMS = gql`
   query {
-    rooms(isDefault: true) {
+    getAllRooms(isDefault: true) {
       _id
       name
       slug
@@ -23,27 +45,20 @@ const RoomsDefaultQuery = gql`
   }
 `;
 
-const RoomsQuery = gql`
+const GET_ROOMS_BY_USER = gql`
   query {
-    rooms {
-      name
-      slug
-      isDefault
-      timestamp
-    }
-  }
-`;
-
-const RoomQuery = gql`
-  query room($name: String, $slug: String) {
-    room(name: $name, slug: $slug) {
+    getRoomsByUser {
+      _id
       name
       slug
       isDefault
       timestamp
       messages {
+        _id
         content
+        type
         user {
+          _id
           name
           email
           birthday
@@ -55,4 +70,89 @@ const RoomQuery = gql`
   }
 `;
 
-export { RoomsDefaultQuery, RoomsQuery, RoomQuery, UsersQuery };
+const ENTER_ROOM = gql`
+  query enterRoom($name: String, $slug: String) {
+    enterRoom(name: $name, slug: $slug) {
+      _id
+      name
+      slug
+      isDefault
+      timestamp
+      messages {
+        _id
+        content
+        user {
+          _id
+          name
+          email
+          birthday
+        }
+        type
+        timestamp
+      }
+    }
+  }
+`;
+
+const SEND_MESSAGE = gql`
+  mutation sendMessage($content: String!, $roomId: String!) {
+    createMessage(content: $content, roomId: $roomId) {
+      _id
+      content
+      user {
+        _id
+        name
+        email
+        birthday
+      }
+      type
+      timestamp
+    }
+  }
+`;
+
+const GET_MESSAGES = gql`
+  query getMessagesByRoom($roomId: String!) {
+    getMessagesByRoom(roomId: $roomId) {
+      _id
+      content
+      user {
+        _id
+        name
+        email
+        birthday
+      }
+      type
+      timestamp
+    }
+  }
+`;
+
+const MESSAGE = gql`
+  subscription message($slug: String!) {
+    message(slug: $slug) {
+      _id
+      content
+      user {
+        _id
+        name
+        email
+        birthday
+      }
+      type
+      timestamp
+    }
+  }
+`;
+
+export {
+  COMPLETE_SIGN_IN,
+  CREATE_UNLOGGED_USER,
+  ENTER_ROOM,
+  GET_MESSAGES,
+  GET_ROOMS_BY_USER,
+  GET_SELF,
+  MESSAGE,
+  GET_ALL_ROOMS,
+  SEND_MESSAGE,
+};
