@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "server": "nodemon --exec ts-node index",
-    "test": "jest"
+    "server": "nodemon --watch \"src/**\" --ext \"ts,json,graphql\" --ignore \"src/tests/**\" --exec  ts-node src/index",
+    "test": "node_modules/mocha/bin/mocha tests"
   },
   "author": "",
   "license": "ISC",
@@ -13,6 +13,7 @@
     "dotenv": "^9.0.2",
     "graphql": "^15.5.0",
     "graphql-yoga": "^1.18.3",
+    "lodash": "^4.17.21",
     "merge-graphql-schemas": "^1.7.8",
     "mongoose": "^5.12.10",
     "regenerator-runtime": "^0.13.7",
@@ -27,6 +28,7 @@
     "@babel/preset-env": "^7.14.2",
     "@babel/runtime": "^7.14.0",
     "@types/jest": "^26.0.23",
+    "@types/lodash": "^4.14.170",
     "@types/mocha": "^8.2.2",
     "babel-core": "^6.26.3",
     "babel-loader": "^8.2.2",

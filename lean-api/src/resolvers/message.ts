@@ -1,53 +1,50 @@
 import { Types } from "mongoose";
 import { Message, Room } from "../schemas";
+const { DB_NAME } = process.env;
 
 export default {
   Query: {
-    getAllMessages: () => Message.find().populate('room').populate('user'),
-    getMessagesByRoom: (
-      _: any,
-      { roomId, type }: { roomId: string; type: string }
-    ) =>
-      Message.find({
-        $and: [{ "room._id": roomId }],
-        $or: [{ type }],
-      }).populate('room').populate('user'),
-    getMessagesByContent: (
-      _: any,
-      { roomId, search, type }: { roomId: string; search: string; type: string }
-    ) =>
-      Message.find({
-        $and: [{ content: { $regex: new RegExp(search, "i") } }],
-        $or: [{ type }],
-      }).populate('room').populate('user'),
+    getAllMessages: () => Message.find().populate("room").populate("user"),
+    getMessagesByRoom: (_: any, { roomId }: { roomId: Room }) =>
+      Message.find({ room: roomId }).populate("room").populate("user"),
   },
 
   Mutation: {
-    createMessage: async (
+    sendMessage: async (
       _: any,
       {
         content,
-        userId,
         roomId,
-      }: { content: string; userId: string; roomId: string }
+        userId,
+      }: { content: string; roomId: string; userId: string },
+      ctx: any
     ) => {
-      const _id = new Types.ObjectId();
-      const room = await Room.find({
-        $and: [{ _id: roomId }, { "users._id": userId }],
-      });
-      if (!room) return;
-      const message = await Message.create({
-        _id,
+      userId = ctx.userId || userId;
+      let message = null;
+      message = await Message.create({
+        _id: new Types.ObjectId(),
         content,
         user: userId,
         room: roomId,
       });
-      await Room.findByIdAndUpdate(
+      const room = await Room.findByIdAndUpdate(
         roomId,
-        { $push: { messages: { _id } } },
+        { $push: { messages: message._id } },
         { new: true }
       );
-      return message.populate('room').populate('user');
+      message = await Message.findById(message._id)
+        .populate("room")
+        .populate("user");
+      if (!room) return null;
+      ctx.pubsub.publish(`${DB_NAME}_${room.slug}`, { message });
+      return message;
+    },
+  },
+
+  Subscription: {
+    message: {
+      subscribe: (_: any, { slug }: { slug: string }, { pubsub }: any) =>
+        pubsub.asyncIterator(`${DB_NAME}_${slug}`),
     },
   },
 };

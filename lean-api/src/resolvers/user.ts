@@ -3,9 +3,7 @@ import { User } from "../schemas";
 
 export default {
   Query: {
-    getAllUsers: () => User.find(),
-    getUser: ({ email, userId }: { email: string; userId: string }) =>
-      User.findOne({ $or: [{ email }, { _id: userId }] }),
+    getSelf: (_: any, __: any, { user }: { user: User }) => user,
   },
 
   Mutation: {
@@ -26,6 +24,22 @@ export default {
         birthday,
       }: { name: string; email: string; birthday: string }
     ) => User.create({ _id: new Types.ObjectId(), name, email, birthday }),
+
+    completeSignIn: (
+      _: any,
+      {
+        name,
+        email,
+        birthday,
+        userId,
+      }: { name: string; email: string; birthday: string; userId: string },
+      ctx: any
+    ) =>
+      User.findByIdAndUpdate(
+        ctx.userId || userId,
+        { name, email, birthday },
+        { new: true }
+      ),
 
     updateUser: (
       _: any,

@@ -1,6 +1,7 @@
 import { Schema, model, models, Document } from "mongoose";
 import { User } from "./user";
 import { Message } from "./message";
+import _ from "lodash";
 
 export interface Room extends Document {
   _id: string;
@@ -11,7 +12,7 @@ export interface Room extends Document {
   users: User[];
   isDefault: boolean;
 }
-const RoomSchema = new Schema({
+const RoomSchema = new Schema<Room>({
   _id: Schema.Types.ObjectId,
   name: {
     type: String,
@@ -21,6 +22,8 @@ const RoomSchema = new Schema({
   slug: {
     type: String,
     trim: true,
+    unique: [true, "Chat already exists"],
+    required: [true, "Invalid Chat Slug!"],
     lowercase: true,
   },
   timestamp: {
@@ -45,9 +48,9 @@ const RoomSchema = new Schema({
   },
 });
 
-RoomSchema.path("slug").validate(async (slug: string) => {
-  const count = await models.Room.countDocuments({ slug });
-  return !count;
-}, "Chat already exists");
+RoomSchema.pre("save", function (next) {
+  this.users = _.uniq(this.users.filter((u) => u));
+  next();
+});
 
 export const Room = model<Room>("Room", RoomSchema);

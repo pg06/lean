@@ -4,21 +4,26 @@ type User {
   _id: ID!
   name: String!
   email: String
-  birthday: Date
+  birthday: String
 }
 
 type Query {
-  getAllUsers: [User!]
-  getUser(email: String, userId: String): User
+  getSelf: User
 }
 
 type Mutation {
   createUnloggedUser(name: String!): User
-  createUser(name: String!, email: String!, birthday: Date!): User
+  createUser(name: String!, email: String!, birthday: String!): User
+  completeSignIn(
+    userId: String
+    name: String!
+    email: String!
+    birthday: String!
+  ): User
   updateUser(
     userId: String!
     name: String!
     email: String!
-    birthday: Date!
+    birthday: String!
   ): User
 }

@@ -12,16 +12,17 @@ type Room {
 
 type Query {
   getAllRooms(isDefault: Boolean): [Room!]
-  getRoom(slug: String, name: String): Room
+  getRoomsByUser(userId: String): [Room]
+  enterRoom(
+    userId: String
+    name: String
+    slug: String
+    isDefault: Boolean
+  ): Room
 }
 
 type Mutation {
   createRoom(name: String!, isDefault: Boolean): Room
-  updateRoom(roomId: ID!, name: String, isDefault: Boolean): Room
-  enterRoom(userId: ID!, roomId: ID, name: String, slug: String, isDefault: Boolean): Room
-  leaveRoom(roomId: ID!, userId: ID!): Room
-}
-
-type Subscription {
-  getRoom(roomId: ID, slug: String, name: String): Room
+  updateRoom(roomId: String!, name: String, isDefault: Boolean): Room
+  leaveRoom(roomId: String!): Room
 }
