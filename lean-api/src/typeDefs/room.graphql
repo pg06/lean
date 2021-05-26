@@ -1,0 +1,28 @@
+scalar Date
+
+type Room {
+  _id: ID!
+  name: String!
+  slug: String!
+  timestamp: Date!
+  users: [User]
+  messages: [Message]
+  isDefault: Boolean!
+}
+
+type Query {
+  getAllRooms(isDefault: Boolean): [Room!]
+  getRoomsByUser(userId: String): [Room]
+  enterRoom(
+    userId: String
+    name: String
+    slug: String
+    isDefault: Boolean
+  ): Room
+}
+
+type Mutation {
+  createRoom(name: String!, isDefault: Boolean): Room
+  updateRoom(roomId: String!, name: String, isDefault: Boolean): Room
+  leaveRoom(slug: String!): Room
+}

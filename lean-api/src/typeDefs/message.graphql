@@ -1,0 +1,23 @@
+scalar Date
+
+type Message {
+  _id: ID!
+  content: String!
+  room: Room!
+  user: User!
+  type: String!
+  timestamp: Date!
+}
+
+type Query {
+  getAllMessages: [Message]
+  getMessagesByRoom(roomId: String!): [Message]
+}
+
+type Mutation {
+  sendMessage(content: String!, roomId: String!, userId: String): Message
+}
+
+type Subscription {
+  message(slug: String!): Message
+}

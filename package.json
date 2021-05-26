@@ -1,0 +1,11 @@
+{
+  "name": "lean",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "react-scripts start",
+    "server": "nodemon --watch \"lean-api/src/**\" --ext \"ts,json\" --ignore \"src/tests/**\" --exec  ts-node lean-api/src/index"
+  },
+  "author": "",
+  "license": "ISC"
+}
