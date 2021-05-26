@@ -35,14 +35,14 @@ const ChatMessage = ({ message }: Props) => {
     _id === cookies.l ? "me" : "";
   return (
     <div ref={messageRef} className={"message-card " + meClassName(message)}>
-      <p>
+      <p className="name">
         <b>{message.user.name}</b>
       </p>
-      <span>
+      <div className="content">
         {message.content.split("\n").map((c, i) => (
           <div key={i}>{c}</div>
         ))}
-      </span>
+      </div>
     </div>
   );
 };

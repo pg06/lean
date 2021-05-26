@@ -60,18 +60,6 @@ const RoomPage = (props: Props) => {
   } = match;
   const { push } = history;
 
-  const rooms: Room[] = [];
-  if (getAllRooms) {
-    getAllRooms.forEach((r) => {
-      if (!rooms.filter((_r) => _r._id === r._id).length) rooms.push(r);
-    });
-  }
-  if (getRoomsByUser) {
-    getRoomsByUser.forEach((r) => {
-      if (!rooms.filter((_r) => _r._id === r._id).length) rooms.push(r);
-    });
-  }
-
   if (slug.indexOf("$") > -1) {
     push("/");
   }
@@ -90,7 +78,13 @@ const RoomPage = (props: Props) => {
     );
   }
 
-  return <Chats room={room} rooms={rooms} history={history} match={match} />;
+  return (
+    <Chats
+      rooms={[...(getAllRooms || []), ...(getRoomsByUser || []), room]}
+      history={history}
+      match={match}
+    />
+  );
 };
 
 export default compose(

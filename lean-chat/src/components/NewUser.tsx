@@ -76,7 +76,7 @@ const NewUser = ({ me, show, handleClose, setMe }: Props) => {
         variables: {
           name: user.name,
           email: user.email,
-          birthday: user.birthday,
+          birthday: user.birthday.split("/").reverse().join("-"),
         },
       });
       if (completeSignInError) {

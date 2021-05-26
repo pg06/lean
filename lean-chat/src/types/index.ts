@@ -23,6 +23,7 @@ export interface Room {
 
 export interface History {
   push: Function;
+  replace: Function;
 }
 
 export interface Params {

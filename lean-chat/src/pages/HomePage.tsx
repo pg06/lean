@@ -41,17 +41,6 @@ const HomePage = (props: Props) => {
   } = props;
   const { push } = history;
   const [cookies] = useCookies(["l"]);
-  const rooms: Room[] = [];
-  if (getAllRooms) {
-    getAllRooms.forEach((r) => {
-      if (!rooms.filter((_r) => _r._id === r._id).length) rooms.push(r);
-    });
-  }
-  if (getRoomsByUser) {
-    getRoomsByUser.forEach((r) => {
-      if (!rooms.filter((_r) => _r._id === r._id).length) rooms.push(r);
-    });
-  }
 
   if (loadingAllRooms || loadingRoomsByUser) {
     return <p>Loading...</p>;
@@ -68,14 +57,13 @@ const HomePage = (props: Props) => {
       </div>
     );
   }
+  const rooms = [...(getAllRooms || []), ...(getRoomsByUser || [])];
 
   if (rooms.length && cookies.l) {
     push(`/room/${rooms[0].slug}`);
   }
 
-  return (
-    <Chats rooms={rooms} room={undefined} history={history} match={match} />
-  );
+  return <Chats rooms={rooms} history={history} match={match} />;
 };
 
 export default compose(

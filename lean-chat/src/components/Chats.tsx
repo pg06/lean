@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useCookies } from "react-cookie";
 import slugify from "slugify";
+import { useMutation } from "@apollo/client";
+import * as _ from "lodash";
 
 import Container from "react-bootstrap/Container";
 import Tab from "react-bootstrap/Tab";
@@ -8,52 +10,36 @@ import Nav from "react-bootstrap/Nav";
 import Col from "react-bootstrap/Col";
 
 import "../App.css";
+import { LEAVE_ROOM } from "../queries/index";
 import { EnterRoomModal, NewUser } from "../components";
 import type { Room, History, Match } from "../types";
 import Chat from "./Chat";
 
 interface Props {
-  room: Room | undefined;
   rooms: Room[];
   history: History;
   match: Match;
 }
 
-const Chats = ({ rooms, room, history, match }: Props) => {
+const Chats = ({ rooms, history, match }: Props) => {
   const [show, setShow] = useState(false);
   const [completeSignIn, setCompleteSignIn] = useState(false);
-  const [tab, setTab] = useState(
-    rooms && rooms.length ? rooms[0].slug : room ? room.slug : "$show_users$"
+  const [tab /*setTab*/] = useState(
+    match.params.slug
+      ? match.params.slug
+      : rooms && rooms.length
+      ? rooms[0].slug
+      : "$show_users$"
   );
   const [selectedRooms /*setRooms*/] = useState<Room[]>(
-    room && !rooms.filter((r) => r._id === room._id).length
-      ? [...rooms, room]
-      : rooms
+    _.uniqBy(rooms, (r) => r._id)
   );
   const [cookies /*setCookie, removeCookie */] = useCookies(["l"]);
   const [changeRoomName, setChangeRoomName] =
     useState<null | string | undefined>();
+  const [leaveRoom /*error*/] = useMutation(LEAVE_ROOM);
 
   const { push } = history;
-  // const {
-  //   params: { slug },
-  // } = match;
-
-  // useEffect(() => {
-  //   if (rooms && !selectedRooms.length) {
-  //     setRooms(rooms);
-  //   }
-  //   if (room && !selectedRooms.filter((r) => r.slug === room.slug).length) {
-  //     setRooms([...selectedRooms, room]);
-  //   }
-  // }, []);
-
-  // if (cookies.selectedrooms) removeCookie("selectedrooms");
-  // if (selectedRooms) {
-  //   setCookie("selectedrooms", selectedRooms.map(({ _id }) => _id).join(";"), {
-  //     path: "/",
-  //   });
-  // }
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -61,29 +47,34 @@ const Chats = ({ rooms, room, history, match }: Props) => {
   const handleChangeRoom = async () => {
     if (changeRoomName) {
       const newSlug = slugify(changeRoomName);
-      // // const {
-      // //   data: { enterRoom: newRoom },
-      // // } = await enterRoom({ name: changeRoomName });
-
-      // setRooms([...selectedRooms, newRoom]);
-      // setTab(newRoom.slug);
       push(`/room/${newSlug}`);
     }
     handleClose();
     setChangeRoomName(null);
   };
 
-  const changeRoom = (slug: string | null) => {
+  const changeRoom = async (slug: string | null) => {
     if (slug === "$change_room$") {
       return handleShow();
-    }
-    if (slug === "$show_users$") {
-      setTab(slug);
+    } else if (slug === "$leave_room$") {
+      const newSlug =
+        selectedRooms.length > 1
+          ? selectedRooms[selectedRooms.length - 2].slug
+          : null;
+      if (match.params.slug) {
+        leaveRoom({ variables: { slug: match.params.slug } });
+      }
+
+      if (newSlug) {
+        push(`/room/${newSlug}`);
+      } else {
+        push(`/`);
+      }
+    } else if (slug === "$show_users$") {
       push(`/`);
       return;
     }
     if (slug && slug.indexOf("$") === -1) {
-      setTab(slug);
       push(`/room/${slug}`);
     }
   };
@@ -112,20 +103,18 @@ const Chats = ({ rooms, room, history, match }: Props) => {
             <Nav.Item>
               <Nav.Link eventKey="$change_room$">+</Nav.Link>
             </Nav.Item>
+            <Nav.Item>
+              <Nav.Link eventKey="$leave_room$">Leave Chat</Nav.Link>
+            </Nav.Item>
           </Nav>
           <Tab.Content className={!cookies.l ? "new-user-modal" : ""}>
-            <Tab.Pane eventKey="$show_users$">
-              {/* {users.map((user) => (
-                <div key={user.email} className="user-item">
-                  {user.name}
-                </div>
-              ))} */}
-            </Tab.Pane>
+            <Tab.Pane eventKey="$show_users$"></Tab.Pane>
             {selectedRooms.map((_room) => (
               <Tab.Pane key={_room.slug} eventKey={_room.slug}>
                 <Chat room={_room} setCompleteSignIn={setCompleteSignIn} />
               </Tab.Pane>
             ))}
+            <Tab.Pane eventKey="$leave_room$"></Tab.Pane>
           </Tab.Content>
         </Tab.Container>
       </Col>

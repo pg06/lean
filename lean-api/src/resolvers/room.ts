@@ -13,7 +13,7 @@ export default {
       { userId }: { userId: string },
       { userId: userIdCtx }: any
     ) =>
-      userId
+      userIdCtx || userId
         ? Room.find({ users: userIdCtx || userId }).populate({
             path: "messages",
             populate: { path: "user" },
@@ -111,23 +111,19 @@ export default {
         },
         { new: true }
       ),
-    leaveRoom: async (
-      _: any,
-      { roomId }: { roomId: string },
-      { userId }: any
-    ) => {
-      const room = await Room.findById(roomId);
+    leaveRoom: async (_: any, { slug }: { slug: string }, { userId }: any) => {
+      const room = await Room.findOne({ slug: slug });
       if (room && room.users.includes(userId)) {
         await Message.create({
           _id: new Types.ObjectId(),
           type: "info",
           content: "$leave_room$",
           user: userId,
-          room: roomId,
+          room: room.id,
         });
-        await Room.findByIdAndUpdate(roomId, { $pull: { users: userId } });
+        await Room.findOneAndUpdate({ slug }, { $pull: { users: userId } });
       }
-      return await Room.findById(roomId);
+      return await Room.findOne({ slug });
     },
   },
 };

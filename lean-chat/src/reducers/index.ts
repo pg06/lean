@@ -5,8 +5,6 @@ const initialState = {
 };
 
 const userReducer = (state = initialState, action: any) => {
-  console.log(state);
-  console.log(action);
   switch (action.type) {
     case "SET_ME":
       return {

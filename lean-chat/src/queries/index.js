@@ -94,9 +94,21 @@ const ENTER_ROOM = gql`
   }
 `;
 
+const LEAVE_ROOM = gql`
+  mutation leaveRoom($slug: String!) {
+    leaveRoom(slug: $slug) {
+      _id
+      name
+      slug
+      isDefault
+      timestamp
+    }
+  }
+`;
+
 const SEND_MESSAGE = gql`
   mutation sendMessage($content: String!, $roomId: String!) {
-    createMessage(content: $content, roomId: $roomId) {
+    sendMessage(content: $content, roomId: $roomId) {
       _id
       content
       user {
@@ -149,10 +161,11 @@ export {
   COMPLETE_SIGN_IN,
   CREATE_UNLOGGED_USER,
   ENTER_ROOM,
+  GET_ALL_ROOMS,
   GET_MESSAGES,
   GET_ROOMS_BY_USER,
   GET_SELF,
+  LEAVE_ROOM,
   MESSAGE,
-  GET_ALL_ROOMS,
   SEND_MESSAGE,
 };

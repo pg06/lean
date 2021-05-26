@@ -16,7 +16,6 @@ interface Props extends PropsFromRedux {
 
 const UserContainer = (props: Props) => {
   const { me, children } = props;
-  console.log(props);
   if (!me) {
     return <NewUser show={true} handleClose={() => {}} />;
   }
